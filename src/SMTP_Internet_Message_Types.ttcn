@@ -1,0 +1,123 @@
+/******************************************************************************
+* Copyright (c) 2008, 2014  Ericsson AB
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+*
+* Contributors:
+*  Gabor Szalai - initial implementation and initial documentation
+******************************************************************************/
+//
+//  File:     SMTP_Internet_Message_Types.ttcn
+//  Rev:      R2A
+//  Prodnr:   CNL 113 598
+
+module SMTP_Internet_Message_Types {
+
+import from SMTP_Types all;
+
+ external function enc_Mail_PDU(in Mail_PDU pdu) return charstring
+ with { extension "prototype(convert) encode(TEXT)" };
+ external function dec_Mail_PDU(in charstring stream) return Mail_PDU
+
+ external function enc_Mail_PDU_utf8(in Mail_PDU_utf8 pdu) return octetstring
+ external function dec_Mail_PDU_utf8(in octetstring stream) return Mail_PDU_utf8
+
+type charstring Mail_address;
+
+type record of Mail_address Mail_From with {
+  variant "BEGIN('From: ','From[ ]#(,):[ ]#(,)',case_insensitive)"
+  variant "SEPARATOR(', ','[ ]#(,),[ ]#(,)',case_insensitive)"
+  variant "END('\r\n')"
+}
+
+type Mail_address Mail_Sender with {
+  variant "BEGIN('Sender: ','Sender[ ]#(,):[ ]#(,)',case_insensitive)"
+  variant "END('\r\n')"
+}
+
+type record of Mail_address Mail_To with {
+  variant "BEGIN('To: ','To[ ]#(,):[ ]#(,)',case_insensitive)"
+  variant "SEPARATOR(', ','[ ]#(,),[ ]#(,)',case_insensitive)"
+  variant "END('\r\n')"
+}
+
+type record of Mail_address Mail_Cc with {
+  variant "BEGIN('Cc: ','Cc[ ]#(,):[ ]#(,)',case_insensitive)"
+  variant "SEPARATOR(', ','[ ]#(,),[ ]#(,)',case_insensitive)"
+  variant "END('\r\n')"
+}
+
+type record of Mail_address Mail_Bcc with {
+  variant "BEGIN('Bcc: ','Bcc[ ]#(,):[ ]#(,)',case_insensitive)"
+  variant "SEPARATOR(', ','[ ]#(,),[ ]#(,)',case_insensitive)"
+  variant "END('\r\n')"
+}
+
+type charstring Mail_Subject with {
+  variant "BEGIN('Subject: ','Subject[ ]#(,):[ ]#(,)',case_insensitive)"
+  variant "END('\r\n')"
+}
+
+type record Mail_Unknown_Header{
+  charstring                  header_name,
+  charstring                  header_value
+} with {
+  variant (header_name) "END(':','[ ]#(,):[ ]#(,)')"
+  variant (header_value) "TEXT_CODING(,,'[^\r]#(,)')"
+  variant "END('\r\n','')"
+}
+
+type union Mail_Other_Header{
+  Mail_Unknown_Header         unknown
+}
+
+type set of Mail_Other_Header Mail_Other_Headers with {
+  variant "END('','\r\n')"
+}
+
+type charstring Mail_Raw_Header with {
+  variant "END('\r\n','')"
+  variant "TEXT_CODING(,,'[^\r]#(1,)')"
+}
+
+
+type set of Mail_Raw_Header Mail_Raw_Headers with {
+  variant "END('','\r\n')"
+}
+
+type set Mail_Headers {
+  SMTP_Received_headers       receiveds optional,
+  SMTP_Return_Path            return_path optional,
+  SMTP_Date                   date optional,
+  Mail_From                   from_field optional,
+  Mail_To                     to_field optional,
+  Mail_Cc                     cc optional,
+  Mail_Bcc                    bcc optional,
+  Mail_Sender                 sender_field optional,
+  Mail_Subject                subject optional,
+  Mail_Other_Headers          other_headers optional,
+  Mail_Raw_Headers            raw_headers optional
+} with {
+  variant (date) "BEGIN('Date: ','Date[ ]#(,):[ ]#(,)',case_insensitive)"
+  variant (date) "END('\r\n')"
+  variant (receiveds) "TEXT_CODING(,repeatable=true)"
+  variant (other_headers) "TEXT_CODING(,repeatable=true)"
+  variant (raw_headers) "TEXT_CODING(,repeatable=true)"
+  variant "END('\r\n')"
+}
+
+
+type record Mail_PDU {
+  Mail_Headers                fields optional,
+  charstring                  body
+} with {variant "TEXT_CODING()"}
+
+type record Mail_PDU_utf8 {
+  Mail_Headers                fields optional,
+  universal charstring        body
+} 
+
+
+} with { encode "TEXT" }

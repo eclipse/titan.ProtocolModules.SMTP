@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Copyright (c) 2014 Ericsson
+
+  All rights reserved. This program and the accompanying materials
+  are made available under the terms of the Eclipse Public License v1.0
+  which accompanies this distribution, and is available at
+  http://www.eclipse.org/legal/epl-v10.html
+
+
+   File:               SMTP_CNL113598.tpd
+   Description:        tpd project file
+   Rev:                R2A
+   Prodnr:             CNL 113 598
+
+ -->
+<TITAN_Project_File_Information version="1.0">
+  <ProjectName>SMTP_CNL113598</ProjectName>
+  <Folders>
+    <FolderResource projectRelativePath="src" relativeURI="src"/>
+  </Folders>
+  <Files>
+    <FileResource projectRelativePath="src/SMTP_Internet_Message_EncDec.cc" relativeURI="src/SMTP_Internet_Message_EncDec.cc"/>
+    <FileResource projectRelativePath="src/SMTP_Internet_Message_Types.ttcn" relativeURI="src/SMTP_Internet_Message_Types.ttcn"/>
+    <FileResource projectRelativePath="src/SMTP_Types.ttcn" relativeURI="src/SMTP_Types.ttcn"/>
+  </Files>
+  <ActiveConfiguration>Default</ActiveConfiguration>
+  <Configurations>
+    <Configuration name="Default">
+      <ProjectProperties>
+        <MakefileSettings>
+          <generateInternalMakefile>true</generateInternalMakefile>
+          <GNUMake>true</GNUMake>
+          <incrementalDependencyRefresh>true</incrementalDependencyRefresh>
+          <targetExecutable>bin/SMTP_CNL113598</targetExecutable>
+        </MakefileSettings>
+        <LocalBuildSettings>
+          <workingDirectory>bin</workingDirectory>
+        </LocalBuildSettings>
+        <NamingCoventions>
+          <enableProjectSpecificSettings>true</enableProjectSpecificSettings>
+          <externalFunction>.*</externalFunction>
+          <formalParameter>.*</formalParameter>
+        </NamingCoventions>
+      </ProjectProperties>
+    </Configuration>
+  </Configurations>
+</TITAN_Project_File_Information>

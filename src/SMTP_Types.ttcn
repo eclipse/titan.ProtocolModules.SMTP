@@ -1,0 +1,216 @@
+/******************************************************************************
+* Copyright (c) 2008, 2014  Ericsson AB
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+*
+* Contributors:
+*  Gabor Szalai - initial implementation and initial documentation
+******************************************************************************/
+//
+//  File:     SMTP_Types.ttcn
+//  Rev:      R2A
+//  Prodnr:   CNL 113 598
+
+module SMTP_Types {
+
+ external function enc_SMTP_PDU(in SMTP_PDU pdu) return charstring
+ with { extension "prototype(convert) encode(TEXT)" };
+ external function dec_SMTP_PDU(in charstring stream) return SMTP_PDU
+ with { extension "prototype(convert) decode(TEXT)" };
+
+
+type charstring SMTP_Path;
+type charstring SMTP_Domain;
+type charstring SMTP_Raw;
+
+type SMTP_Path SMTP_Return_Path with {
+  variant "BEGIN('Return-Path: ','Return-Path[ ]#(,):[ ]#(,)',case_insensitive)"
+  variant "END('\r\n')"
+}
+
+type record SMTP_Date{
+  charstring                day_of_week optional,
+  integer                   day,
+  charstring                month,
+  integer                   year,
+  integer                   hour,
+  integer                   minute,
+  integer                   second,
+  charstring                zone
+} with {
+  variant (day_of_week) "TEXT_CODING(,,'[a-zA-Z]#3')"
+  variant (day_of_week) "END(', ',',[ ]#(,)')"
+  variant (day) "TEXT_CODING(,,'[0-9]#(1,2)')"
+  variant (day) "END(' ','[ ]#(,)')"
+  variant (month) "TEXT_CODING(,,'[a-zA-Z]#3')"
+  variant (month) "END(' ','[ ]#(,)')"
+  variant (year) "TEXT_CODING(,,'[0-9]#(2,4)')"
+  variant (year) "END(' ','[ ]#(,)')"
+  variant (hour) "TEXT_CODING(,,'[0-9]#2')"
+  variant (hour) "END(':','[ ]#(,):[ ]#(,)')"
+  variant (minute) "TEXT_CODING(,,'[0-9]#2')"
+  variant (minute) "END(':','[ ]#(,):[ ]#(,)')"
+  variant (second) "TEXT_CODING(,,'[0-9]#2')"
+  variant (second) "END(' ','[ ]#(,)')"
+}
+
+type charstring SMTP_Received_header with {
+  variant "BEGIN('Received: ','Received[ ]#(,):[ ]#(,)',case_insensitive)"
+  variant "END('\r\n')"
+}
+
+/*type record SMTP_Received_header {
+  charstring          from_domain optional,
+  charstring          by_domain,
+  charstring          via_link optional,
+  charstring          with_protocol optional,
+  charstring          id optional,
+  charstring          for_path optional,
+  SMTP_Date           date_time
+}
+*/
+type record of SMTP_Received_header SMTP_Received_headers;
+
+type record SMTP_Helo_cmd {
+  SMTP_Domain         domain
+} with {
+  variant "BEGIN('HELO',,case_insensitive)"
+  variant (domain) "BEGIN(' ')"
+  variant "END('\r\n')"
+}
+
+type record SMTP_Mail_cmd {
+  SMTP_Path           reverse_path
+} with {
+  variant "BEGIN('MAIL FROM:',,case_insensitive)"
+  variant "END('\r\n')"
+}
+
+type record SMTP_Rcpt_cmd {
+  SMTP_Path           forward_path
+} with {
+  variant "BEGIN('RCPT TO:',,case_insensitive)"
+  variant "END('\r\n')"
+}
+
+type record SMTP_Data_cmd {
+} with {
+  variant "BEGIN('DATA',,case_insensitive)"
+  variant "END('\r\n')"
+}
+
+type record SMTP_Rset_cmd {
+} with {
+  variant "BEGIN('RSET',,case_insensitive)"
+  variant "END('\r\n')"
+}
+
+type record SMTP_Noop_cmd {
+} with {
+  variant "BEGIN('NOOP',,case_insensitive)"
+  variant "END('\r\n')"
+}
+
+type record SMTP_Quit_cmd {
+} with {
+  variant "BEGIN('QUIT',,case_insensitive)"
+  variant "END('\r\n')"
+}
+
+type record SMTP_Unsup_cmd {
+  charstring          cmd_code length(4),
+  charstring          cmd_argument optional
+} with {
+  variant (cmd_code) "TEXT_CODING(length=4)"
+  variant (cmd_argument) "BEGIN(' ')"
+  variant "END('\r\n')"
+}
+
+type record SMTP_Send_cmd {
+  SMTP_Path           reverse_path
+} with {
+  variant "BEGIN('SEND FROM:',,case_insensitive)"
+  variant "END('\r\n')"
+}
+type record SMTP_Soml_cmd {
+  SMTP_Path           reverse_path
+} with {
+  variant "BEGIN('SOML FROM:',,case_insensitive)"
+  variant "END('\r\n')"
+}
+type record SMTP_Saml_cmd {
+  SMTP_Path           reverse_path
+} with {
+  variant "BEGIN('SAML FROM:',,case_insensitive)"
+  variant "END('\r\n')"
+}
+
+type record SMTP_Vrfy_cmd {
+  charstring          string
+} with {
+  variant "BEGIN('VRFY',,case_insensitive)"
+  variant (string) "BEGIN(' ')"
+  variant "END('\r\n')"
+}
+
+type record SMTP_Expn_cmd {
+  charstring          string
+} with {
+  variant "BEGIN('EXPN',,case_insensitive)"
+  variant (string) "BEGIN(' ')"
+  variant "END('\r\n')"
+}
+
+type record SMTP_Help_cmd {
+  charstring          string optional
+} with {
+  variant "BEGIN('HELP',,case_insensitive)"
+  variant (string) "BEGIN(' ')"
+  variant "END('\r\n')"
+}
+
+type record SMTP_Turn_cmd {
+} with {
+  variant "BEGIN('TURN',,case_insensitive)"
+  variant "END('\r\n')"
+}
+
+type union SMTP_Command {
+  SMTP_Helo_cmd       helo,
+  SMTP_Mail_cmd       mail,
+  SMTP_Rcpt_cmd       rcpt,
+  SMTP_Data_cmd       data,
+  SMTP_Rset_cmd       rset,
+  SMTP_Noop_cmd       noop,
+  SMTP_Quit_cmd       quit,
+  
+  SMTP_Send_cmd       send_cmd,
+  SMTP_Soml_cmd       soml,
+  SMTP_Saml_cmd       saml,
+  SMTP_Vrfy_cmd       vrfy,
+  SMTP_Expn_cmd       expn,
+  SMTP_Help_cmd       help,
+  SMTP_Turn_cmd       turn,
+
+  SMTP_Unsup_cmd      unsupported
+}
+
+type record SMTP_Reply {
+  integer             reply_code,
+  boolean             multi_line,
+  charstring          reply_text optional
+} with {
+  variant (reply_code) "TEXT_CODING(length=3)"
+  variant (multi_line) "TEXT_CODING(true:'-';false:' ')"
+  variant "END('\r\n')"
+}
+
+type union SMTP_PDU {
+  SMTP_Command      command,
+  SMTP_Reply        smtp_reply,
+  SMTP_Raw          raw_data
+} with {variant "TEXT_CODING()"}
+
+} with { encode "TEXT" }
