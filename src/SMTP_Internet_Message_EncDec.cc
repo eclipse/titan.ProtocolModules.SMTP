@@ -10,7 +10,7 @@
 ******************************************************************************/
 //
 //  File:     SMTP_Internet_Message_EncDec.cc
-//  Rev:      R2A
+//  Rev:      R2B
 //  Prodnr:   CNL 113 598
 
 #include "SMTP_Internet_Message_Types.hh"
