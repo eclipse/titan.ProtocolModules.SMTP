@@ -1,0 +1,114 @@
+---
+Author: János Kövesdi
+Version: 155 17-CNL 113 598, Rev. A
+Date: 2013-09-06
+
+---
+= SMTP Protocol Modules for TTCN-3 Toolset with TITAN, Function Specification
+:author: János Kövesdi
+:revnumber: 155 17-CNL 113 598, Rev. A
+:revdate: 2013-09-06
+:toc:
+
+== How to Read This Document
+
+This is the Function Specification for the SMTP protocol module. SMTP protocol module is developed for the TTCN-3 Toolset with TITAN.
+
+== Scope
+
+The purpose of this document is to specify the content of the SMTP protocol modules.
+
+= General
+
+Protocol modules implement the message structures of the related protocol in a formalized way, using the standard specification language TTCN-3. This allows defining of test data (templates) in the TTCN-3 language <<_3, [3]>> and correctly encoding/decoding messages when executing test suites using the Titan TTCN-3 test environment.
+
+Protocol module is using Titan’s TEXT encoding attributes <<_4, [4]>> and hence is usable with the Titan test toolset only.
+
+= Functional Specification
+
+== Protocol Version Implemented
+
+This set of protocol modules implements protocol messages and constants of the SMTP protocol (see <<_1, [1]>>) and the ARPA Internet Text Messages (see <<_2, [2]>>) with the modifications specified in <<modifications-deviations-related-to-the-protocol-specification, Modifications/Deviations Related to the Protocol Specification>>.
+
+[[modifications-deviations-related-to-the-protocol-specification]]
+== Modifications/Deviations Related to the Protocol Specification
+
+=== Implemented Messages
+
+All of the SMTP commands, replies and message headers defined in <<_1, [1]>> are implemented.
+
+Only the following message header fields implemented from <<_2, [2]>>:
+
+* `Date`
+
+* `From`
+
+* `To`
+
+* `Cc`
+
+* `Bcc`
+
+* `Sender`
+
+* `Subject`
+
+Any other header fields are treated as `Unknown_Header`.
+
+[[protocol-modifications-deviations]]
+=== Protocol Modifications/Deviations
+
+The type structure has been based on <<_2, [2]>> and <<_1, [1]>>, but the protocol module is able to handle the messages which are coded according to the newest version of the standards. See <<_5, [5]>> and <<_6, [6]>>.
+
+[[encoding-decoding-functions]]
+== Encoding/Decoding Functions
+
+This product also contains encoding/decoding functions which assure correct encoding of messages when sent from Titan and correct decoding of messages when received by Titan. Implemented encoding/decoding functions:
+
+[cols=3*,options=header]
+|===
+
+|Name |Type of formal parameters |Type of return value
+|`enc_SMTP_PDU` |(in SMTP_PDU pdu) |return charstring
+|`dec_SMTP_PDU` |(in charstring stream) |return SMTP_PDU
+|`enc_Mail_PDU` |(in Mail_PDU pdu) |return charstring
+|`dec_Mail_PDU` |(in charstring stream) |return Mail_PDU
+|`enc_Mail_PDU_utf8` |(in Mail_PDU_utf8 pdu) |return octetstring
+|`dec_Mail_PDU_utf8` |(in octetstring stream) |return Mail_PDU_utf8
+|===
+
+= Terminology
+
+No specific terminology is used.
+
+= Abbreviations
+
+SMTP:: Simple Mail Transfer Protocol
+
+TTCN-3:: Testing and Test Control Notation version 3
+
+= References
+
+[[_1]]
+[1] https://tools.ietf.org/html/rfc821[RFC 821] +
+Simple Mail Transfer Protocol
+
+[[_2]]
+[2] https://tools.ietf.org/html/rfc822[RFC 822] +
+Standard for the Format of ARPA Internet Text Messages
+
+[[_3]]
+[3] ETSI ES 201 873-1 v.2.2.1 (02/2003) +
+The Testing and Test Control Notation version 3. Part 1: Core Language
+
+[[_4]]
+[4] User Guide for TITAN TTCN-3 Test Executor
+
+[[_5]]
+[5] https://tools.ietf.org/html/rfc2821[RFC 2821] +
+Simple Mail Transfer Protocol
+
+[[_6]]
+[6] https://tools.ietf.org/html/rfc2822[RFC 2822] +
+Internet Message Format
+
